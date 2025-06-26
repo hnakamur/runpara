@@ -6,6 +6,9 @@ import shlex
 import sys
 
 
+version = "v0.0.1"
+
+
 async def run_command_for_host(command):
     process = await asyncio.create_subprocess_shell(
         command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
@@ -21,6 +24,10 @@ async def run_command_for_host(command):
 
 
 async def run(args):
+    if args.version:
+        print(version)
+        return
+
     hosts = args.hosts.split()
     command_template = args.template
 
@@ -69,6 +76,9 @@ async def main():
             Can contain {{host}}, {{command}}, {{quoted_command}}.
             Can be set by RUNPARA_TEMPLATE environment variable.
             Current default value: {default_template}""",
+        )
+        parser.add_argument(
+            "--version", "-V", action="store_true", help="Show version and exit"
         )
         parser.set_defaults(func=run)
         args = parser.parse_args()
